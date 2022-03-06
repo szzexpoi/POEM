@@ -92,11 +92,11 @@ def train(args):
         model.load_state_dict(ckpt['state_dict'])
         optimizer.load_state_dict(ckpt['optimizer'])
     scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.5**(1 / args.lr_halflife))
-    
+
     logging.info("Start training........")
     for epoch in range(start_epoch, args.num_epoch):
         model.train()
-        
+
         for i, batch in enumerate(train_loader):
             progress = epoch+i/len(train_loader)
             coco_ids, answers, *batch_input = [x.cuda() if len(x)%args.num_gpu==0 else x[:-1].cuda() for x in batch] # for VQA, multi-GPU
@@ -114,8 +114,8 @@ def train(args):
             if (i+1) % (len(train_loader) // 50) == 0:
                 logging.info("Progress %.3f  ce_loss = %.3f" % (progress, loss.item()))
 
-        save_checkpoint(epoch, model, optimizer, model_kwargs_tosave, os.path.join(args.save_dir, 'model.pt')) 
-        
+        save_checkpoint(epoch, model, optimizer, model_kwargs_tosave, os.path.join(args.save_dir, 'model.pt'))
+
         logging.info(' >>>>>> save to %s <<<<<<' % (args.save_dir))
         if args.val:
             valid_acc = validate(model, val_loader, device)
@@ -163,8 +163,8 @@ def main():
     parser.add_argument('--cls_fc_dim', default=1024, type=int, help='classifier fc dim')
     parser.add_argument('--glimpses', default=2, type=int)
     parser.add_argument('--dropout', default=0.5, type=float)
-    parser.add_argument('--T_ctrl', default=3, type=int, help='controller decode length')
-    parser.add_argument('--stack_len', default=4, type=int, help='stack length')
+    parser.add_argument('--T_ctrl', default=5, type=int, help='controller decode length')
+    parser.add_argument('--stack_len', default=6, type=int, help='stack length')
     parser.add_argument('--spatial', action='store_true')
     parser.add_argument('--module_prob_use_gumbel', default=0, choices=[0, 1], type=int, help='whether use gumbel softmax for module prob. 0 not use, 1 use')
     parser.add_argument('--module_prob_use_validity', default=1, choices=[0, 1], type=int, help='whether validate module prob.')

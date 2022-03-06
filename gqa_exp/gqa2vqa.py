@@ -1,15 +1,15 @@
 import json
-import os 
+import os
+import argparse
 
-data_dir = './GQA' 
-save_dir = './VQA'
+parser = argparse.ArgumentParser(description='Converting GQA style annotation to VQA style annotations')
+parser.add_argument('--input_dir',type=str, default=None, help='Directory to zero-shot GQA annotation')
+parser.add_argument('--save_dir',type=str, default=None, help='Directory for saving data')
+args = parser.parse_args()
 
 
-# for split in ['train','val']:
-for split in ['val']:
-	# data = json.load(open(os.path.join(data_dir,split+'_balanced_questions.json')))
-	# data = json.load(open(os.path.join(data_dir,'ood_'+split+'_tail.json')))
-	data = json.load(open(os.path.join(data_dir,'novel_gqa_'+split+'_img_known_latest.json')))
+for split in ['train','val','val_known']:
+	data = json.load(open(os.path.join(agrs.input_dir,'novel_gqa_'+split+'.json')))
 
 	processed_question = []
 	anno = []
@@ -22,7 +22,7 @@ for split in ['val']:
 		# VQA style question annotations
 		cur_que = dict()
 		cur_que['question_id'] = qid
-		cur_que['question'] = question 
+		cur_que['question'] = question
 		cur_que['image_id'] = img_id
 		processed_question.append(cur_que)
 
@@ -35,12 +35,7 @@ for split in ['val']:
 		anno.append(cur_anno)
 
 
-	with open(os.path.join(save_dir,'Novel_img_'+split+'_vqa_question_known_latest.json'),'w') as f:
+	with open(os.path.join(args.save_dir,'novel_gqa_'+split+'_question.json'),'w') as f:
 		json.dump(processed_question,f)
-	with open(os.path.join(save_dir,'Novel_img_'+split+'_vqa_annotation_known_latest.json'),'w') as f:
+	with open(os.path.join(args.save_dir,'novel_gqa_'+split+'_annotation.json'),'w') as f:
 		json.dump(anno,f)
-
-	# with open(os.path.join(save_dir,'GQA_'+split+'_vqa_question.json'),'w') as f:
-	# 	json.dump(processed_question,f)
-	# with open(os.path.join(save_dir,'GQA_'+split+'_vqa_annotation.json'),'w') as f:
-	# 	json.dump(anno,f)

@@ -19,7 +19,7 @@ import json
 
 
 parser = argparse.ArgumentParser(description='Prototype learning experiments')
-parser.add_argument('--mode', type=str, default='vqa', help='Selecting running mode (default: vqa or gqa)')
+parser.add_argument('--mode', type=str, default='vqa', help='Selecting running mode (default: vqa, gqa, or novelvqa)')
 parser.add_argument('--data_dir',type=str, default='./data', help='Directory to preprocessed language files')
 parser.add_argument('--img_dir',type=str, default=None, help='Directory to image features')
 parser.add_argument('--checkpoint_dir',type=str, default=None, help='Directory for saving checkpoint')
@@ -46,14 +46,14 @@ def adjust_learning_rate(init_lr,optimizer, epoch):
 
 
 def main():
-    tf_summary_writer = tf.summary.create_file_writer(args.checkpoint_dir)    
-    
+    tf_summary_writer = tf.summary.create_file_writer(args.checkpoint_dir)
+
     if args.mode == 'gqa':
         train_data = Batch_generator_prototype(args.img_dir,args.data_dir,'train')
         val_data = Batch_generator_prototype(args.img_dir,args.data_dir,'val')
     else:
-        train_data = Batch_generator_prototype_VQA(args.img_dir,args.data_dir,'train')
-        val_data = Batch_generator_prototype_VQA(args.img_dir,args.data_dir,'val')
+        train_data = Batch_generator_prototype_VQA(args.img_dir,args.data_dir,'train',args.mode)
+        val_data = Batch_generator_prototype_VQA(args.img_dir,args.data_dir,'val',args.mode)
 
     trainloader = torch.utils.data.DataLoader(train_data, batch_size=args.batch_size, shuffle=True, num_workers=12)
     valloader = torch.utils.data.DataLoader(val_data, batch_size=args.batch_size, shuffle=False, num_workers=4)
@@ -71,7 +71,7 @@ def main():
             img, label = Variable(img), Variable(label)
             img, label = img.cuda(), label.cuda()
             optimizer.zero_grad()
-            
+
             prediction = model(img)
             loss = bce_loss(prediction,label)
             loss.backward()
@@ -124,7 +124,7 @@ def main():
     #main loop for training:
     print('Start training model')
     iteration = 0
-    val_score = 0 
+    val_score = 0
     for epoch in range(args.epoch):
         adjust_learning_rate(args.lr,optimizer, epoch)
         iteration = train(iteration)

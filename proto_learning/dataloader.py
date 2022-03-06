@@ -33,7 +33,7 @@ class Batch_generator_prototype(data.Dataset):
 	def __init__(self,img_dir,data_dir,mode='train'):
 		self.img_dir = img_dir
 		self.data = json.load(open(os.path.join(data_dir,'prototype_data_gqa.json')))[mode]
-		self.obj2idx = json.load(open(os.path.join(data_dir,'obj2idx_prototype_gqa.json')))
+		self.obj2idx = json.load(open(os.path.join(data_dir,'obj2idx_gqa.json')))
 
 		self.init_data()
 
@@ -64,10 +64,14 @@ class Batch_generator_prototype(data.Dataset):
 
 
 class Batch_generator_prototype_VQA(data.Dataset):
-	def __init__(self,img_dir,data_dir,mode='train'):
+	def __init__(self,img_dir,data_dir,mode='train',dataset='vqa'):
 		self.img_dir = img_dir
-		self.data = json.load(open(os.path.join(data_dir,'prototype_data_vqa.json')))[mode]
-		self.obj2idx = json.load(open(os.path.join(data_dir,'obj2idx_vqa.json')))
+        if dataset == 'vqa':
+    		self.data = json.load(open(os.path.join(data_dir,'prototype_data_vqa.json')))[mode]
+    		self.obj2idx = json.load(open(os.path.join(data_dir,'obj2idx_vqa.json')))
+        else:
+    		self.data = json.load(open(os.path.join(data_dir,'prototype_data_vqa_all.json')))[mode]
+    		self.obj2idx = json.load(open(os.path.join(data_dir,'obj2idx_vqa_all.json')))
 
 		self.init_data()
 

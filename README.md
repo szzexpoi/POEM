@@ -5,6 +5,7 @@ This repository implements the PrOtotypical nEural Module network. It contains f
 - gqa_exp: zero-shot VQA experiments on the GQA dataset, and
 - proto_learning: the code for our prototype learning method with object factorization.
 - data: code for data preprocessing
+
 Please refer to the README in each directory for details.
 
 ### Disclaimer

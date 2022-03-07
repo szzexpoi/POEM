@@ -20,10 +20,10 @@ import json
 
 parser = argparse.ArgumentParser(description='Prototype learning experiments')
 parser.add_argument('--mode', type=str, default='vqa', help='Selecting running mode (default: vqa, gqa, or novelvqa)')
-parser.add_argument('--data_dir',type=str, default='./data', help='Directory to preprocessed language files')
-parser.add_argument('--img_dir',type=str, default=None, help='Directory to image features')
+parser.add_argument('--data_dir',type=str, default='./', help='Directory to preprocessed language files')
+parser.add_argument('--img_dir',type=str, default=None, help='Directory to bottom-up features')
 parser.add_argument('--checkpoint_dir',type=str, default=None, help='Directory for saving checkpoint')
-parser.add_argument('--epoch',type=int, default=10, help='Defining maximal number of epochs')
+parser.add_argument('--epoch',type=int, default=60, help='Defining maximal number of epochs')
 parser.add_argument('--lr',type=float, default=4e-4, help='Defining initial learning rate (default: 4e-4)')
 parser.add_argument('--batch_size',type=int, default=128, help='Defining batch size for training (default: 150)')
 parser.add_argument('--clip',type=float, default=0.1, help='Gradient clipping to prevent gradient explode (default: 0.1)')

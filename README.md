@@ -1,4 +1,4 @@
-# POEM: Bridging Known and Unknown with Prototypical Neural Modules
+# POEM: Bridging Knowns and Unknowns with Prototypical Neural Modules
 
 This repository implements the PrOtotypical nEural Module network. It contains three key components, stored in the following directories:
 - vqa_exp: zero-shot VQA experiments on the VQA v2 and Novel-VQA datasets
@@ -6,6 +6,10 @@ This repository implements the PrOtotypical nEural Module network. It contains t
 - proto_learning: the code for our prototype learning method with object factorization.
 
 Please refer to the README in each directory for details.
+
+### Disclaimer
+We adopt the official implementation of the [XNM](https://github.com/shijx12/XNM-Net) as a backbone model for attention supervision. We use the bottom-up features provided in the following repos: [for VQA](https://github.com/peteanderson80/bottom-up-attention) and [for GQA](https://github.com/airsplay/lxmert). Please refer to these links for further README information.
+
 
 ### Reference
 If you use our code or data, please cite our paper:

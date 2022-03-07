@@ -9,7 +9,7 @@ This repository implements the PrOtotypical nEural Module network. It contains f
 Please refer to the README in each directory for details.
 
 ### Disclaimer
-We adopt the official implementation of the [XNM](https://github.com/shijx12/XNM-Net) as a backbone model for prototypical reasoning. We use the bottom-up features provided in the following repos: [for VQA](https://github.com/peteanderson80/bottom-up-attention) and [for GQA](https://github.com/airsplay/lxmert). Please refer to these links for further README information.
+We adopt the official implementation of the [XNM](https://github.com/shijx12/XNM-Net) as the backbone model for prototypical reasoning. We use the bottom-up features provided in the following repos: [for VQA](https://github.com/peteanderson80/bottom-up-attention) and [for GQA](https://github.com/airsplay/lxmert). Please refer to these links for further README information.
 
 
 ### Reference

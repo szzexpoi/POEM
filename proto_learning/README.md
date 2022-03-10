@@ -10,8 +10,8 @@ This code implements the prototype learning method proposed in POEM.
 ### Pretrained prototypes
 We provide the [pretrained prototypes](https://drive.google.com/file/d/1jt6VRDgcmjtr_Oz_tm9F3EuJj5CIvnmr/view?usp=sharing) used in our experiments.
 
-### Training prototype from scratched
-If you would like to train the prototype from scratched:
+### Training prototype from scratch
+If you would like to train the prototype from scratch:
 1. Download our [processed annotations](https://drive.google.com/file/d/1t3ZyRKNLL0Pg3hmrOJIUWOjQpv78ahuP/view?usp=sharing) for multi-label classification. Currently we only provide those for datasets in our experiments, code for generating the annotations for other datasets will be released shortly.
 2. Training the model:
 ```

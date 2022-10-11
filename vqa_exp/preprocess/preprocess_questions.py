@@ -75,6 +75,18 @@ def main(args):
             for token in question.split(' '):
                 if token not in question_token_to_idx:
                     question_token_to_idx[token] = len(question_token_to_idx)
+
+        # adding vocabularies from validation set to training set (for Novel VQA)
+        val_question = json.load(open(args.val_questions_json, 'r'))
+        val_question_id_to_str = { q['question_id']:q['question'] for q in val_question }
+        for i,q in val_question_id_to_str.items():
+            question = q.lower()[:-1]
+            question = _special_chars.sub('', question)
+            val_question_id_to_str[i] = question
+            for token in question.split(' '):
+                if token not in question_token_to_idx:
+                    question_token_to_idx[token] = len(question_token_to_idx)
+
         print('Get question_token_to_idx')
         print(len(question_token_to_idx))
 
@@ -191,6 +203,7 @@ if __name__ == '__main__':
     parser.add_argument('--answer_top', default=3000, type=int)
     parser.add_argument('--glove_pt', help='glove pickle file, should be a map whose key are words and value are word vectors represented by numpy arrays. Only needed in train mode')
     parser.add_argument('--input_questions_json', required=True)
+    parser.add_argument('--val_questions_json')
     parser.add_argument('--input_annotations_json', help='not need for test mode')
     parser.add_argument('--output_pt', required=True)
     parser.add_argument('--vocab_json', required=True)

@@ -13,7 +13,7 @@ logFormatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
 rootLogger = logging.getLogger()
 
 from DataLoader import QADataLoader
-from model.net import POEM
+from model.net import POEM_LMH
 from utils.misc import todevice
 from validate import validate
 
@@ -27,7 +27,7 @@ def train(args):
         'batch_size': args.batch_size,
         'pc_json':args.pc_json,
         'use_spatial': args.spatial,
-        'num_workers': 2,
+        'num_workers': 8,
         'shuffle': True,
         'mode':'train'
     }
@@ -40,7 +40,7 @@ def train(args):
             'batch_size': args.batch_size,
             'pc_json':args.pc_json,
             'use_spatial': args.spatial,
-            'num_workers': 2,
+            'num_workers': 8,
             'shuffle': False,
             'mode':'val'
         }
@@ -68,19 +68,20 @@ def train(args):
         'p_decay': args.p_decay,
     }
     model_kwargs_tosave = { k:v for k,v in model_kwargs.items() if k != 'vocab' }
-    model = POEM(**model_kwargs)
+    model = POEM_LMH(**model_kwargs).to(device)
     model = nn.DataParallel(model)
     model = model.cuda()
+
 
     logging.info(model)
     logging.info('load glove vectors')
     train_loader.glove_matrix = torch.FloatTensor(train_loader.glove_matrix).to(device)
     model.module.token_embedding.weight.data = train_loader.glove_matrix
-
     ################################################################
 
     parameters = [p for p in model.parameters() if p.requires_grad]
     optimizer = optim.Adam(parameters, args.lr, weight_decay=0)
+    # optimizer = torch.optim.Adamax(parameters)
 
 
     start_epoch = 0
@@ -99,12 +100,13 @@ def train(args):
 
         for i, batch in enumerate(train_loader):
             progress = epoch+i/len(train_loader)
-            coco_ids, answers, *batch_input = [x.cuda() if len(x)%args.num_gpu==0 else x[:-1].cuda() for x in batch] # for VQA, multi-GPU
-            logits, others = model(*batch_input)
+            coco_ids, answers, *batch_input = [x.cuda() if len(x)%2==0 else x[:-1].cuda() for x in batch] # for VQA, multi-GPU
+            logits, entropy, others = model(*batch_input) # for LMH
 
-            ##################### loss #####################
-            nll = -nn.functional.log_softmax(logits, dim=1)
-            loss = (nll * answers / 10).sum(dim=1).mean() # for VQA
+            # loss for LMH
+            base_loss = (-torch.log(logits+1e-16) * answers / 10).sum(dim=1).mean()
+            entropy_loss = 0 * entropy.mean() # ignoring entropy term somehow is more advantageous for NMN-based methods
+            loss = base_loss + entropy_loss
             #################################################
             scheduler.step()
             optimizer.zero_grad()
@@ -125,13 +127,11 @@ def train(args):
 def save_checkpoint(epoch, model, optimizer, model_kwargs, filename):
     state = {
         'epoch': epoch,
-        # 'state_dict': model.state_dict(),
         'state_dict': model.module.state_dict(), # for multi-GPU
         'optimizer': optimizer.state_dict(),
         'model_kwargs': model_kwargs,
         }
     torch.save(state, filename)
-
 
 
 def main():
@@ -151,10 +151,10 @@ def main():
     parser.add_argument('--lr_halflife', default=50000, type=int)
     parser.add_argument('--num_epoch', default=100, type=int)
     parser.add_argument('--batch_size', default=256, type=int)
-    parser.add_argument('--seed', type=int, default=666, help='random seed')
+    parser.add_argument('--seed', type=int, default=666, help='random seed') 
     parser.add_argument('--val', action='store_true', help='whether validate after each training epoch')
     # model hyperparameters
-    parser.add_argument('--num_gpu', default=2, type=int, help='number of GPUs')
+    parser.add_argument('--model_type', default="XNM", type=str, help='Model Name (XNM/NSM)')
     parser.add_argument('--dim_word', default=300, type=int, help='word embedding')
     parser.add_argument('--dim_hidden', default=1024, type=int, help='hidden state of seq2seq parser')
     parser.add_argument('--dim_v', default=512, type=int, help='node embedding')
@@ -163,8 +163,8 @@ def main():
     parser.add_argument('--cls_fc_dim', default=1024, type=int, help='classifier fc dim')
     parser.add_argument('--glimpses', default=2, type=int)
     parser.add_argument('--dropout', default=0.5, type=float)
-    parser.add_argument('--T_ctrl', default=5, type=int, help='controller decode length')
-    parser.add_argument('--stack_len', default=6, type=int, help='stack length')
+    parser.add_argument('--T_ctrl', default=3, type=int, help='controller decode length')
+    parser.add_argument('--stack_len', default=4, type=int, help='stack length')
     parser.add_argument('--spatial', action='store_true')
     parser.add_argument('--module_prob_use_gumbel', default=0, choices=[0, 1], type=int, help='whether use gumbel softmax for module prob. 0 not use, 1 use')
     parser.add_argument('--module_prob_use_validity', default=1, choices=[0, 1], type=int, help='whether validate module prob.')

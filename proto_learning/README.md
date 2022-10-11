@@ -8,7 +8,7 @@ This code implements the prototype learning method proposed in POEM.
 3. You may need to install the OpenCV package (CV2) for Python.
 
 ### Pretrained prototypes
-We provide the [pretrained prototypes](https://drive.google.com/file/d/1jt6VRDgcmjtr_Oz_tm9F3EuJj5CIvnmr/view?usp=sharing) used in our experiments.
+We provide the [pretrained prototypes](https://drive.google.com/file/d/1alCvI8tub2yv0lJI2shjTlC8fA_TEZLe/view?usp=sharing) used in our experiments.
 
 ### Training prototype from scratch
 If you would like to train the prototype from scratch:

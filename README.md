@@ -1,4 +1,4 @@
-# Divide and Conquer: Answering Questions with Compositional Reasoning and Object Factorization
+# Divide and Conquer: Answering Questions with Object Factorization and Compositional Reasoning
 
 This repository implements the PrOtotypical nEural Module network. It contains four key components, stored in the following directories:
 - vqa_exp: zero-shot VQA experiments on the VQA v2 and Novel-VQA datasets

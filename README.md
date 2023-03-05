@@ -16,5 +16,11 @@ We adopt the official implementation of the [XNM](https://github.com/shijx12/XNM
 ### Reference
 If you use our code or data, please cite our paper:
 ```
-TBD
+@InProceedings{poem,
+author = {Chen, Shi and Zhao, Qi},
+title = {Divide and Conquer: Answering Questions with Object Factorization and Compositional Reasoning},
+booktitle = {CVPR},
+year = {2023}
+}
+```
 ```

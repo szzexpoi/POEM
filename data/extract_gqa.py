@@ -30,3 +30,4 @@ if __name__ == '__main__':
             cur_box = np.frombuffer(base64.b64decode(item['boxes']),
                   dtype=np.float32).reshape((num_box,-1))
             np.save(os.path.join(args.output,'feature',str(img_id)),cur_data)
+            np.save(os.path.join(args.output,'box',str(img_id)),cur_box)

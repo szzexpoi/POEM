@@ -35,7 +35,8 @@ python ./gqa2vqa.py --input_dir ./ --save_dir ../gqa_exp/data
 
 Unzip the TSV file with the following commands for VQA and GQA (note that you need to run the code with Python2), respectively:
 ```
-python2 ./extract_vqa.py --input $TSV_FILE --output $FEATURE_DIR
+python ../vqa_exp/preprocess/preprocess_features.py --input_tsv_folder $TSV_FILE_DIR --output_h5 $FEATURE_DIR/trainval_feature.h5
+
 ```
 ```
 python2 ./extract_gqa.py --input $TSV_FILE --output $FEATURE_DIR

@@ -23,6 +23,6 @@ if __name__ == '__main__':
         reader = csv.DictReader(tsv_in_file, delimiter='\t', fieldnames = FIELDNAMES)
         for item in reader:
             img_id = int(item['image_id'])
-            cur_data = np.frombuffer(base64.decodestring(item['boxes']),
+            cur_data = np.frombuffer(base64.decodestring(item['features']),
                   dtype=np.float32).reshape((int(item['num_boxes']),-1))
             np.save(os.path.join(args.output,str(img_id)),cur_data)
